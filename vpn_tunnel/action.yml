@@ -24,11 +24,11 @@ runs:
       shell: bash
       run: |
         cat << EOF > client.ovpn
-        ${{ secrets.vpn_certificate }}
+        ${{ inputs.vpn_certificate }}
         EOF
         cat << EOF > auth.txt
         ${{ inputs.vpn_user }}
-        ${{ secrets.vpn_password }}
+        ${{ inputs.vpn_password }}
         EOF
         sudo apt-get install openvpn -y
     - name: Connect to VPN
