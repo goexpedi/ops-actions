@@ -10,7 +10,6 @@ on:
       vpn_user:
         required: true
         type: string
-    secrets:
       vpn_certificate:
         required: true
         type: string
@@ -18,23 +17,25 @@ on:
         required: true
         type: string
 
-jobs:
-  vpn_tunnel:
-    using: "composite"
-    steps:
-      - name: Download OpenVPN
-        run: |
-          cat << EOF > client.ovpn
-          ${{ secrets.vpn_certificate }}
-          EOF
-          cat << EOF > auth.txt
-          ${{ inputs.vpn_user }}
-          ${{ secrets.vpn_password }}
-          EOF
-          sudo apt-get install openvpn -y
-      - name: Connect to VPN
-        run: sudo openvpn --config client.ovpn --auth-user-pass auth.txt --daemon
-      - name: Wait for a VPN connection
-        run: |
-          IP=$(curl --silent ifconfig.me)
-          until [ $IP = ${{ inputs.vpn_ip }} ]; do IP=$(curl --silent ifconfig.me) && echo $IP && sleep 1; done
+runs:
+  using: "composite"
+  steps:
+    - name: Download OpenVPN
+      shell: bash
+      run: |
+        cat << EOF > client.ovpn
+        ${{ secrets.vpn_certificate }}
+        EOF
+        cat << EOF > auth.txt
+        ${{ inputs.vpn_user }}
+        ${{ secrets.vpn_password }}
+        EOF
+        sudo apt-get install openvpn -y
+    - name: Connect to VPN
+      shell: bash
+      run: sudo openvpn --config client.ovpn --auth-user-pass auth.txt --daemon
+    - name: Wait for a VPN connection
+      shell: bash
+      run: |
+        IP=$(curl --silent ifconfig.me)
+        until [ $IP = ${{ inputs.vpn_ip }} ]; do IP=$(curl --silent ifconfig.me) && echo $IP && sleep 1; done
