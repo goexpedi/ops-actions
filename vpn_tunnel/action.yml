@@ -1,21 +1,19 @@
 name: "VPN Tunnel"
 description: "Create a tunnel with OpenVPN"
 
-on:
-  workflow_call:
-    inputs:
-      vpn_ip:
-        required: true
-        type: string
-      vpn_user:
-        required: true
-        type: string
-      vpn_certificate:
-        required: true
-        type: string
-      vpn_password:
-        required: true
-        type: string
+inputs:
+  vpn_ip:
+    required: true
+    type: string
+  vpn_user:
+    required: true
+    type: string
+  vpn_certificate:
+    required: true
+    type: string
+  vpn_password:
+    required: true
+    type: string
 
 runs:
   using: "composite"
