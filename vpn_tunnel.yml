@@ -1,0 +1,41 @@
+name: "VPN Tunnel"
+description: "Create a tunnel with OpenVPN"
+
+on:
+  workflow_call:
+    inputs:
+      vpn_ip:
+        required: true
+        type: string
+      vpn_user:
+        required: true
+        type: string
+    secrets:
+      vpn_certificate:
+        required: true
+        type: string
+      vpn_password:
+        required: true
+        type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download OpenVPN
+      run: |
+        cat << EOF > client.ovpn
+        ${{ secrets.vpn_certificate }}
+        EOF
+        cat << EOF > auth.txt
+        ${{ inputs.vpn_user }}
+        ${{ secrets.vpn_password }}
+        EOF
+        sudo apt-get install openvpn -y
+    - name: Connect to VPN
+      run: sudo openvpn --config client.ovpn --auth-user-pass auth.txt --daemon
+    - name: Wait for a VPN connection
+      timeout-minutes: 1
+      run: |
+        IP=$(curl --silent ifconfig.me)
+        until [ $IP = ${{ inputs.vpn_ip }} ]; do IP=$(curl --silent ifconfig.me) && echo $IP && sleep 1; done
+
