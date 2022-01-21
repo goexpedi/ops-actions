@@ -37,3 +37,8 @@ runs:
       run: |
         IP=$(curl --silent ifconfig.me)
         until [ $IP = ${{ inputs.vpn_ip }} ]; do IP=$(curl --silent ifconfig.me) && echo $IP && sleep 1; done
+    - name: Kill VPN connection
+      if: always()
+      run: |
+        sudo chmod 777 vpn.log
+        sudo killall openvpn
