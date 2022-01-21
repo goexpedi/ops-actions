@@ -41,5 +41,4 @@ runs:
       if: always()
       shell: bash
       run: |
-        sudo chmod 777 vpn.log
         sudo killall openvpn
