@@ -39,7 +39,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          TAG=${SHA::10}
+          TAG=${SHA}
 
           if ${{ inputs.is_preview }}
           then
