@@ -40,7 +40,7 @@ jobs:
           then
             TAG=pr-${{github.event.number}}-${{github.event.pull_request.head.sha}}
           else
-            TAG=pr-${{github.event.number}}-$GITHUB_SHA
+            TAG=$GITHUB_SHA
           fi
 
           docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
