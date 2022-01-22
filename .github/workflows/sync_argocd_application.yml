@@ -1,0 +1,51 @@
+name: Build and push image
+
+on:
+  workflow_call:
+    inputs:
+      application_name:
+        required: true
+        type: string
+    secrets:
+      vpn_id:
+        required: true
+      vpn_user:
+        required: true
+      argocd_url:
+        required: true
+      argocd_user:
+        required: true
+      vpn_password:
+        required: true
+      vpn_certificate:
+        required: true
+      argocd_password:
+        required: true
+
+jobs:
+  create-argocd-application:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download ArgoCD CLI
+        run: |
+          curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x /usr/local/bin/argocd
+
+      - name: VPN Tunnel
+        uses: goexpedi/ops-actions/vpn_tunnel@master
+        with:
+          vpn_ip: ${{ secrets.vpn_id }}
+          vpn_user: ${{ secrets.vpn_user }}
+          vpn_certificate: ${{ secrets.vpn_certificate }}
+          vpn_password: ${{ secrets.vpn_password }}
+
+      - name: Login into ArgoCD
+        run: |
+          argocd login ${{ secrets.argocd_url }} \
+          --grpc-web \
+          --username ${{ secrets.argocd_user }} \
+          --password ${{ secrets.argocd_password }}
+
+      - name: Create ArgoCD Application
+        run: |
+          argocd app sync ${{ inputs.application_name }}-pr-${{github.event.number}} --async
