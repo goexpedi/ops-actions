@@ -48,7 +48,7 @@ jobs:
 
           if ${{ inputs.update_latest }}
           then
-            docker tag $ECR_REGISTRY/${{ inputs.image_name }}:$TAG latest
+            docker tag $ECR_REGISTRY/${{ inputs.image_name }}:$TAG $ECR_REGISTRY/${{ inputs.image_name }}:latest
             docker push $ECR_REGISTRY/${{ inputs.image_name }}:latest
           fi
       - name: Logout of Amazon ECR
