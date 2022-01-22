@@ -51,7 +51,7 @@ jobs:
           BRANCH=${{ github.head_ref }}
           BRANCH_PARSE="${BRANCH////-}"
 
-          argocd app create ${{ inputs.application_name }}-$BRANCH_PARSE \
+          argocd app create ${{ inputs.application_name }}-pr-${{github.event.number}} \
           --repo git@github.com:${GITHUB_REPOSITORY}.git \
           --revision=$BRANCH \
           --path chart \
