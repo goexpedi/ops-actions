@@ -10,13 +10,13 @@ on:
         required: true
         type: string
       vpn_user:
-        required: trie
+        required: true
         type: string
       argocd_url:
-        required: trie
+        required: true
         type: string
       argocd_user:
-        required: trie
+        required: true
         type: string
     secrets:
       vpn_password:
