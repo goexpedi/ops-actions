@@ -1,0 +1,67 @@
+name: Build and push image
+
+on:
+  workflow_call:
+    inputs:
+      application_name:
+        required: true
+        type: string
+      vpn_id:
+        required: true
+        type: string
+      vpn_user:
+        required: trie
+        type: string
+      argocd_url:
+        required: trie
+        type: string
+      argocd_user:
+        required: trie
+        type: string
+    secrets:
+      vpn_password:
+        required: true
+      vpn_certificate:
+        required: true
+      argocd_password:
+        required: true
+
+jobs:
+  create-argocd-application:
+    needs: build-and-push-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download ArgoCD CLI
+        run: |
+          curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+          chmod +x /usr/local/bin/argocd
+
+      - name: VPN Tunnel
+        uses: goexpedi/ops-actions/vpn_tunnel@master
+        with:
+          vpn_ip: ${{ inputs.vpn_id }}
+          vpn_user: ${{ inputs.vpn_user }}
+          vpn_certificate: ${{ secrets.vpn_certificate }}
+          vpn_password: ${{ secrets.vpn_password }}
+
+      - name: Login into ArgoCD
+        run: |
+          argocd login ${{ inputs.argocd_url }} \
+          --grpc-web \
+          --username ${{ inputs.argocd_user }} \
+          --password ${{ secrets.argocd_password }}
+
+      - name: Create ArgoCD Application
+        run: |
+          BRANCH=${{ github.head_ref }}
+          BRANCH_PARSE="${BRANCH////-}"
+
+          argocd app create ${{ inputs.application_name }}-$BRANCH_PARSE \
+          --repo git@github.com:${GITHUB_REPOSITORY}.git \
+          --revision=$BRANCH \
+          --path chart \
+          --dest-namespace ${{ inputs.application_name }} \
+          --dest-server https://kubernetes.default.svc \
+          --values values.yaml \
+          --helm-set autoscaling.enabled=false \
+          --helm-set revision='$ARGOCD_APP_REVISION'
