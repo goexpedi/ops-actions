@@ -15,6 +15,9 @@ on:
       aws_secret_acesss_key:
         required: true
 
+env:
+  SHA: ${{github.event.pull_request.head.sha}}
+
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
