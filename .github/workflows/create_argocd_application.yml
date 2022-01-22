@@ -59,4 +59,4 @@ jobs:
           --dest-server https://kubernetes.default.svc \
           --values values.yaml \
           --helm-set autoscaling.enabled=false \
-          --helm-set revision='$ARGOCD_APP_REVISION'
+          --helm-set revision='pr-${{github.event.number}}-$ARGOCD_APP_REVISION'
