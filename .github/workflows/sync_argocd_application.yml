@@ -1,4 +1,4 @@
-name: Build and push image
+name: Sync ArgoCD Environment
 
 on:
   workflow_call:
