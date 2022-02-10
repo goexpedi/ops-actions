@@ -12,6 +12,10 @@ on:
       is_preview:
         required: false
         type: boolean
+      tag:
+        required: false
+        type: string
+        default: $GITHUB_SHA
     secrets:
       aws_access_key_id:
         required: true
@@ -40,7 +44,7 @@ jobs:
           then
             TAG=pr-${{github.event.number}}-${{github.event.pull_request.head.sha}}
           else
-            TAG=$GITHUB_SHA
+            TAG=${{ inputs.tag }}
           fi
 
           docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
