@@ -19,7 +19,7 @@ on:
       docker_buildkit:
         required: false
         type: boolean
-        default: 0
+        default: false
     secrets:
       aws_access_key_id:
         required: true
