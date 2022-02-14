@@ -16,6 +16,10 @@ on:
         required: false
         type: string
         default: "."
+      docker_buildkit:
+        required: false
+        type: boolean
+        default: 0
     secrets:
       aws_access_key_id:
         required: true
@@ -48,7 +52,7 @@ jobs:
             TAG=$(grep 'version:' chart/Chart.yaml | tail -n1 | awk '{ print $2}')
           fi
 
-          docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
+          DOCKER_BUILDKIT={{ inputs.docker_buildkit }} docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
           docker push $ECR_REGISTRY/${{ inputs.image_name }}:$TAG
 
           if ${{ inputs.update_latest }}
