@@ -52,7 +52,7 @@ jobs:
             TAG=$(grep 'version:' chart/Chart.yaml | tail -n1 | awk '{ print $2}')
           fi
 
-          DOCKER_BUILDKIT={{ inputs.docker_buildkit }} docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
+          DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
           docker push $ECR_REGISTRY/${{ inputs.image_name }}:$TAG
 
           if ${{ inputs.update_latest }}
