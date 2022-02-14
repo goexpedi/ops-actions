@@ -12,6 +12,10 @@ on:
       is_preview:
         required: false
         type: boolean
+      build_path:
+        required: false
+        type: string
+        default: "."
     secrets:
       aws_access_key_id:
         required: true
@@ -36,6 +40,7 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
+          cd ${{ inputs.build_path }}
           if ${{ inputs.is_preview }}
           then
             TAG=pr-${{github.event.number}}-${{github.event.pull_request.head.sha}}
