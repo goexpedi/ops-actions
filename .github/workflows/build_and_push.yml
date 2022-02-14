@@ -48,13 +48,13 @@ jobs:
             TAG=$(grep 'version:' chart/Chart.yaml | tail -n1 | awk '{ print $2}')
           fi
 
-          docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
-          docker push $ECR_REGISTRY/${{ inputs.image_name }}:$TAG
+          docker build -t $ECR_REGISTRY/${{ inputs.image_name.lowercase }}:$TAG .
+          docker push $ECR_REGISTRY/${{ inputs.image_name.lowercase }}:$TAG
 
           if ${{ inputs.update_latest }}
           then
-            docker tag $ECR_REGISTRY/${{ inputs.image_name }}:$TAG $ECR_REGISTRY/${{ inputs.image_name }}:latest
-            docker push $ECR_REGISTRY/${{ inputs.image_name }}:latest
+            docker tag $ECR_REGISTRY/${{ inputs.image_name.lowercase }}:$TAG $ECR_REGISTRY/${{ inputs.image_name.lowercase }}:latest
+            docker push $ECR_REGISTRY/${{ inputs.image_name.lowercase }}:latest
           fi
       - name: Logout of Amazon ECR
         if: always()
