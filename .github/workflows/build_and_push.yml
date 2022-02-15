@@ -21,7 +21,7 @@ on:
         type: boolean
         default: false
     secrets:
-      github_token:
+      gh_token:
         required: false
       aws_access_key_id:
         required: true
@@ -56,9 +56,9 @@ jobs:
 
           echo "Docker buildkit: ${{ inputs.docker_buildkit }}"
 
-          if [ "${{ inputs.github_token }}" != "" ]; then
+          if [ "${{ inputs.gh_token }}" != "" ]; then
             echo "Token found"
-            DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build --build-arg GITHUB_TOKEN=${{ inputs.github_token }} -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
+            DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build --build-arg GH_TOKEN=${{ inputs.gh_token }} -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
           else
             echo "Token not found"
             DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
