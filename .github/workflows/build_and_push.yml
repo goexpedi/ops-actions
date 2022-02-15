@@ -20,6 +20,9 @@ on:
         required: false
         type: boolean
         default: false
+      github_token:
+        required: false
+        type: string
     secrets:
       aws_access_key_id:
         required: true
@@ -53,7 +56,13 @@ jobs:
           fi
 
           echo "Docker buildkit: ${{ inputs.docker_buildkit }}"
-          DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
+
+          if [ "${{ inputs.github_token }}" != "" ]; then
+            DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build --build-arg GITHUB_TOKEN=${{ inputs.github_token }} -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
+          else
+            DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG
+          fi
+
           docker push $ECR_REGISTRY/${{ inputs.image_name }}:$TAG
 
           if ${{ inputs.update_latest }}
