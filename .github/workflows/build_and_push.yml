@@ -62,7 +62,7 @@ jobs:
             DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build --build-arg GITHUB_TOKEN=${{ inputs.github_token }} -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
           else
             echo "Token not found"
-            DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG
+            DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
           fi
 
           docker push $ECR_REGISTRY/${{ inputs.image_name }}:$TAG
