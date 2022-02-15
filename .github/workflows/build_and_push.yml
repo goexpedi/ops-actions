@@ -56,7 +56,7 @@ jobs:
 
           echo "Docker buildkit: ${{ inputs.docker_buildkit }}"
 
-          if [ "${{ inputs.gh_token }}" != "" ]; then
+          if [ "${{ secrets.gh_token }}" != "" ]; then
             echo "Token found"
             DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build --build-arg GH_TOKEN=${{ secrets.gh_token }} -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
           else
