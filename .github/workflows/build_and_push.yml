@@ -63,7 +63,6 @@ jobs:
           then
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
-            git commit -am "Release ${TAG}"
             git tag ${TAG}
             git push origin :refs/tags/${TAG}
             git tag -m "Release ${TAG}" -fa ${TAG} $(git rev-parse HEAD)
