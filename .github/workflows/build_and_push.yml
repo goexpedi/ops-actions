@@ -3,6 +3,10 @@ name: Build and push image
 on:
   workflow_call:
     inputs:
+      tag_release:
+        required: false
+        type: boolean
+        default: true
       image_name:
         required: true
         type: string
@@ -47,6 +51,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           cd ${{ inputs.build_path }}
+          
           if ${{ inputs.is_preview }}
           then
             TAG=pr-${{github.event.number}}-${{github.event.pull_request.head.sha}}
@@ -54,8 +59,18 @@ jobs:
             TAG=$(grep 'version:' chart/Chart.yaml | tail -n1 | awk '{ print $2}')
           fi
 
+          if ${{ inputs.tag_release }}
+          then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git commit -am "Release ${TAG}"
+            git tag ${TAG}
+            git push origin :refs/tags/${TAG}
+            git tag -m "Release ${TAG}" -fa ${TAG} $(git rev-parse HEAD)
+            git push -f origin ${TAG}
+          fi
+          
           echo "Docker buildkit: ${{ inputs.docker_buildkit }}"
-
           if [ "${{ secrets.gh_token }}" != "" ]; then
             echo "Token found"
             DOCKER_BUILDKIT=${{ inputs.docker_buildkit }} docker build --build-arg GH_TOKEN=${{ secrets.gh_token }} -t $ECR_REGISTRY/${{ inputs.image_name }}:$TAG .
