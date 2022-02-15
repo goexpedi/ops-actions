@@ -58,16 +58,6 @@ jobs:
           else
             TAG=$(grep 'version:' chart/Chart.yaml | tail -n1 | awk '{ print $2}')
           fi
-
-          if ${{ inputs.tag_release }}
-          then
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git tag ${TAG}
-            git push origin :refs/tags/${TAG}
-            git tag -m "Release ${TAG}" -fa ${TAG} $(git rev-parse HEAD)
-            git push -f origin ${TAG}
-          fi
           
           echo "Docker buildkit: ${{ inputs.docker_buildkit }}"
           if [ "${{ secrets.gh_token }}" != "" ]; then
@@ -79,6 +69,16 @@ jobs:
           fi
 
           docker push $ECR_REGISTRY/${{ inputs.image_name }}:$TAG
+          
+          if ${{ inputs.tag_release }}
+          then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git tag ${TAG}
+            git push origin :refs/tags/${TAG}
+            git tag -m "Release ${TAG}" -fa ${TAG} $(git rev-parse HEAD)
+            git push -f origin ${TAG}
+          fi
 
           if ${{ inputs.update_latest }}
           then
