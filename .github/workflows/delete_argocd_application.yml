@@ -31,13 +31,13 @@ jobs:
           curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
           chmod +x /usr/local/bin/argocd
 
-      # - name: VPN Tunnel
-      #   uses: goexpedi/ops-actions/vpn_tunnel@master
-      #   with:
-      #     vpn_ip: ${{ secrets.vpn_id }}
-      #     vpn_user: ${{ secrets.vpn_user }}
-      #     vpn_certificate: ${{ secrets.vpn_certificate }}
-      #     vpn_password: ${{ secrets.vpn_password }}
+      - name: VPN Tunnel
+        uses: goexpedi/ops-actions/vpn_tunnel@master
+        with:
+          vpn_ip: ${{ secrets.vpn_id }}
+          vpn_user: ${{ secrets.vpn_user }}
+          vpn_certificate: ${{ secrets.vpn_certificate }}
+          vpn_password: ${{ secrets.vpn_password }}
 
       - name: Login into ArgoCD
         run: |
