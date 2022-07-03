@@ -57,6 +57,6 @@ jobs:
           --path chart \
           --dest-namespace ${{ inputs.application_name }} \
           --dest-server https://kubernetes.default.svc \
-          --values values.yaml \
+          --values values.development.yaml \
           --helm-set autoscaling.enabled=false \
           --helm-set revision='pr-${{github.event.number}}-$ARGOCD_APP_REVISION'
