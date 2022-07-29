@@ -56,7 +56,7 @@ jobs:
           then
             TAG=pr-${{github.event.number}}-${{github.event.pull_request.head.sha}}
           else
-            if ${{ inputs.build_path = "." }}
+            if [ "${{ inputs.build_path }}" = "."]
             then
               TAG=$(grep 'version:' chart/Chart.yaml | tail -n1 | awk '{ print $2}')
             else
