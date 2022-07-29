@@ -56,7 +56,11 @@ jobs:
           then
             TAG=pr-${{github.event.number}}-${{github.event.pull_request.head.sha}}
           else
-            TAG=$(grep 'version:' chart/Chart.yaml | tail -n1 | awk '{ print $2}')
+            if ${{ inputs.build_path == "." }}
+            then
+              TAG=$(grep 'version:' chart/Chart.yaml | tail -n1 | awk '{ print $2}')
+            else
+              TAG=$(grep 'version:' ../chart/Chart.yaml | tail -n1 | awk '{ print $2}')
           fi
           
           echo "Docker buildkit: ${{ inputs.docker_buildkit }}"
