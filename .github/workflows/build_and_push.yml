@@ -60,6 +60,7 @@ jobs:
               TAG=$(grep 'version:' chart/Chart.yaml | tail -n1 | awk '{ print $2}')
             else
               TAG=$(grep 'version:' ../chart/Chart.yaml | tail -n1 | awk '{ print $2}')
+            fi
           fi
           
           echo "Docker buildkit: ${{ inputs.docker_buildkit }}"
